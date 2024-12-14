@@ -160,7 +160,6 @@ while running:
         data.append([product_imag_link,Brand,Model,eBay_Product_ID_ePID,product_type,name_of_product,company_name,seller_name,price_before_promotion,price_after_promotion,amount_promotion,promotion_percent,Highlights_or_Description_of_product,overall_rating,number_of_rating,Color_name,Screen_Size,Model_Number,battery_size,Processor_version,Graphics_Processor_version,internal_memory,RAM_Size])
         print([product_imag_link,Brand,Model,eBay_Product_ID_ePID,product_type,name_of_product,company_name,seller_name,price_before_promotion,price_after_promotion,amount_promotion,promotion_percent,Highlights_or_Description_of_product,overall_rating,number_of_rating,Color_name,Screen_Size,Model_Number,battery_size,Processor_version,Graphics_Processor_version,internal_memory,RAM_Size])
     page+=1
-    if page == 3: break
 
 import pandas as pd
 
