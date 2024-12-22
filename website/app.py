@@ -1,8 +1,10 @@
 
-from flask import Flask, render_template
-from flask_sqlalchemy import SQLAlchemy
 import os
+from flask import Flask, render_template, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+
 basedir = os.path.abspath(os.path.abspath(os.path.dirname(__file__)))
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey'
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{basedir}/FinalPhonesDataBase.db'
@@ -58,6 +60,30 @@ def phone_detail(phone_id):
         brand=brand,
         rating=rating,
     )
+    
+@app.route('/search')
+def search():
+    query = request.args.get('query')
+    phones = Info.query.filter(Info.model_name.ilike(f'%{query}%')).all()
+
+    results = []
+    for phone in phones:
+        brand = Brand.query.filter_by(brand_id=phone.id).first()
+        price = Price.query.filter_by(price_id=phone.id).first()
+
+        results.append({
+            "id": phone.id,
+            "model_name": phone.model_name,
+            "image_link": phone.image_link,
+            "company_name": brand.company_name if brand else None,
+            "web_store": brand.web_store if brand else None,
+            "price_after_promotion": price.price_after_promotion if price else None,
+        })
+
+    return jsonify(results)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
+    print(basedir)
