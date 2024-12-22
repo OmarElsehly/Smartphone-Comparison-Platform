@@ -1,17 +1,50 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phone List</title>
+    <title>Elsehly</title>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-    <h1>Phone List</h1>
-    <ul>
-        {% for phone in phones %}
-        <li><a href="/phone/{{ phone.id }}">{{ phone.model_name }}</a></li>
-        {% endfor %}
-    </ul>
+    <h1>Phones Comparison Platform</h1>
+
+    <!-- Search input for phone names -->
+    <input type="text" id="phone-search" placeholder="Search for phones...">
+    <ul id="phone-list"></ul>
+
+    <script>
+        const input = document.querySelector('#phone-search');
+        const phoneList = document.querySelector('#phone-list');
+
+        input.addEventListener('keyup', function() {
+            const query = input.value;
+
+            if (query) {
+                fetch(`/search?query=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    let html = '';
+                    data.forEach(phone => {
+                        html += `
+                            <li class="phone-card">
+                                <img src="${phone.image_link || 'https://via.placeholder.com/100'}" alt="${phone.model_name}">
+                                <div class="details">
+                                    <h2>${phone.model_name}</h2>
+                                    <p><strong>Website:</strong> ${phone.web_store || 'N/A'}</p>
+                                    <p><strong>Brand:</strong> ${phone.company_name || 'N/A'}</p>
+                                    <p class="Price:">${phone.price_after_promotion || 'N/A'}</p>
+                                </div>
+                                <a href="/phone/${phone.id}">View Details</a>
+                            </li>`;
+                    });
+                    phoneList.innerHTML = html;
+                });
+            } else {
+                // If search is cleared, show an empty list
+                phoneList.innerHTML = '';
+            }
+        });
+    </script>
 </body>
 </html>
