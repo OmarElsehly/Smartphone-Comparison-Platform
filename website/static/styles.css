@@ -39,3 +39,74 @@ img {
     border-radius: 5px;
     margin-bottom: 10px;
 }
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+#phone-search {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+#phone-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    list-style-type: none;
+    padding: 0;
+}
+
+.phone-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    background-color: #f9f9f9;
+}
+
+.phone-card img {
+    width: 100px;
+    height: auto;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.phone-card .details {
+    flex: 1;
+}
+
+.phone-card .details h2 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.phone-card .details p {
+    margin: 4px 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.phone-card .price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #28a745;
+}
+
+.phone-card a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.phone-card a:hover {
+    text-decoration: underline;
+}
