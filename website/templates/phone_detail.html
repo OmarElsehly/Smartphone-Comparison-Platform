@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ phone.model_name }}</title>
+</head>
+<body>
+    <h1>{{ phone.model_name }}</h1>
+    <img src="{{ phone.image_link }}" alt="Phone Image">
+    <p><strong>Brand:</strong> {{ brand.company_name }}</p>
+    <p><strong>Price Before Promotion:</strong> {{ price.price_before_promotion }}</p>
+    <p><strong>Price After Promotion:</strong> {{ price.price_after_promotion }}</p>
+    <p><strong>Promotion:</strong> {{ price.promotion }}</p>
+    <p><strong>Savings:</strong> {{ price.savings }}</p>
+    <p><strong>Colour:</strong> {{ details.colour_name }}</p>
+    <p><strong>Screen Size:</strong> {{ details.screen_size }}</p>
+    <p><strong>Internal Memory:</strong> {{ details.internal_memory }}</p>
+    <p><strong>RAM Size:</strong> {{ details.ram_size }}</p>
+    <p><strong>Ratings:</strong> {{ rating.ratings }}</p>
+</body>
+</html>
