@@ -1,4 +1,4 @@
-
+/* General styling */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -6,61 +6,55 @@ body {
     background-color: #f4f4f4;
 }
 
-h1, h2, h3 {
-    color: #333;
+header {
+    background-color: #f9f9f9;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-li {
-    margin: 10px 0;
+.search-bar {
+    display: flex;
+    align-items: center;
+    max-width: 500px;
+    margin: 0 auto;
     padding: 10px;
     background-color: #fff;
     border: 1px solid #ddd;
-    border-radius: 5px;
+    border-radius: 25px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-a {
-    text-decoration: none;
-    color: #007BFF;
+.search-bar .search-icon {
+    font-size: 18px;
+    margin-right: 10px;
+    color: #aaa;
 }
 
-a:hover {
-    text-decoration: underline;
+.search-bar input {
+    border: none;
+    outline: none;
+    flex: 1;
+    font-size: 16px;
+    color: #333;
 }
 
-img {
-    max-width: 100%;
-    height: auto;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
-body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
+.search-bar input::placeholder {
+    color: #aaa;
 }
 
+/* Page header */
 h1 {
     text-align: center;
+    margin-top: 20px;
+    color: #333;
 }
 
-#phone-search {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    margin-bottom: 20px;
-}
-
-#phone-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
+/* List styles */
+ul {
     list-style-type: none;
     padding: 0;
+    margin: 20px auto;
+    max-width: 1000px;
 }
 
 .phone-card {
@@ -70,7 +64,8 @@ h1 {
     display: flex;
     gap: 16px;
     align-items: center;
-    background-color: #f9f9f9;
+    background-color: #fff;
+    margin-bottom: 20px;
 }
 
 .phone-card img {
@@ -96,15 +91,9 @@ h1 {
     color: #666;
 }
 
-.phone-card .price {
-    font-size: 18px;
-    font-weight: bold;
-    color: #28a745;
-}
-
 .phone-card a {
     text-decoration: none;
-    color: inherit;
+    color: #007BFF;
 }
 
 .phone-card a:hover {
