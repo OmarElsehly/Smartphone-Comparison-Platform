@@ -16,40 +16,141 @@
     </header>
 
     <h1>Phones Comparison Platform</h1>
+
+    <!-- Webstore Filter Section -->
+    <div class="webstore-filter">
+        <h2>Webstore Filter</h2>
+        <div id="webstore-buttons">
+            <button class="webstore-button" data-webstore="Amazon">
+                <img src="/static/icons/amazon.png" alt="Amazon" class="webstore-icon"> Amazon
+            </button>
+            <button class="webstore-button" data-webstore="Ebay">
+                <img src="/static/icons/ebay.png" alt="Ebay" class="webstore-icon"> Ebay
+            </button>
+            <button class="webstore-button" data-webstore="Noon">
+                <img src="/static/icons/noon.png" alt="Noon" class="webstore-icon"> Noon
+            </button>
+            <button class="webstore-button" data-webstore="Btech">
+                <img src="/static/icons/btech.png" alt="Btech" class="webstore-icon"> Btech
+            </button>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <h2>Phones Filter</h2>
+        <div id="filter-controls">
+            <select id="brand-filter">
+                <option value="">Choose a Brand</option>
+                <option value="Apple">Apple</option>
+                <option value="Samsung">Samsung</option>
+                <!-- Add other brands dynamically if needed -->
+            </select>
+            <input type="number" id="price-min" placeholder="Min Price (EGP or $)">
+            <input type="number" id="price-max" placeholder="Max Price (EGP or $)">
+            <button id="apply-filters">Filter</button>
+        </div>
+    </div>
+
     <ul id="phone-list"></ul>
 
     <script>
-        const input = document.querySelector('#phone-search');
+        const searchInput = document.querySelector('#phone-search');
         const phoneList = document.querySelector('#phone-list');
+        const brandFilter = document.querySelector('#brand-filter');
+        const priceMin = document.querySelector('#price-min');
+        const priceMax = document.querySelector('#price-max');
+        const applyFilters = document.querySelector('#apply-filters');
+        const webstoreButtons = document.querySelectorAll('.webstore-button');
+        let currentWebstore = ''; // Keeps track of the selected webstore
 
-        input.addEventListener('keyup', function() {
-            const query = input.value;
+        // Search Logic
+        searchInput.addEventListener('keyup', function() {
+            const query = searchInput.value;
 
             if (query) {
                 fetch(`/search?query=${query}`)
-                .then(response => response.json())
-                .then(data => {
-                    let html = '';
-                    data.forEach(phone => {
-                        html += `
-                            <li class="phone-card">
-                                <img src="${phone.image_link || 'https://via.placeholder.com/100'}" alt="${phone.model_name}">
-                                <div class="details">
-                                    <h2>${phone.model_name}</h2>
-                                    <p><strong>Website:</strong> ${phone.web_store || 'N/A'}</p>
-                                    <p><strong>Brand:</strong> ${phone.company_name || 'N/A'}</p>
-                                    <p class="Price:">${phone.price_after_promotion || 'N/A'}</p>
-                                </div>
-                                <a href="/phone/${phone.id}">View Details</a>
-                            </li>`;
-                    });
-                    phoneList.innerHTML = html;
-                });
+                    .then(response => response.json())
+                    .then(renderPhones);
             } else {
-                // If search is cleared, show an empty list
                 phoneList.innerHTML = '';
             }
         });
+
+        // Filter Logic (when no webstore is selected)
+        applyFilters.addEventListener('click', function() {
+            const brand = brandFilter.value;
+            const minPrice = priceMin.value;
+            const maxPrice = priceMax.value;
+
+            const url = currentWebstore
+                ? `/filter?webstore=${currentWebstore}&brand=${brand}&min_price=${minPrice}&max_price=${maxPrice}`
+                : `/filter?brand=${brand}&min_price=${minPrice}&max_price=${maxPrice}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(renderPhones);
+        });
+
+        // Webstore Filter Logic (Updated)
+        document.addEventListener("DOMContentLoaded", () => {
+            const buttons = document.querySelectorAll(".webstore-button");
+
+            buttons.forEach((button) => {
+                button.addEventListener("click", () => {
+                    const isActive = button.classList.contains("active");
+
+                    // Remove active state from all buttons
+                    buttons.forEach((btn) => btn.classList.remove("active"));
+
+                    // If the same button is clicked twice, reset it and clear the phone list
+                    if (!isActive) {
+                        button.classList.add("active");
+
+                        // Get the selected webstore
+                        currentWebstore = button.dataset.webstore;
+
+                        // Fetch and render phones filtered by webstore
+                        fetch(`/filter?webstore=${currentWebstore}`)
+                            .then(response => response.json())
+                            .then(renderPhones);
+                    } else {
+                        console.log("Button reset: " + button.textContent.trim());
+
+                        // Clear the phone list and reset the webstore filter
+                        phoneList.innerHTML = '';
+                        currentWebstore = ''; // Clear the selected webstore
+                    }
+                });
+            });
+        });
+
+        // Render Phones Helper Function
+        function renderPhones(data) {
+            let html = '';
+            data.forEach(phone => {
+                // Determine the currency based on the phone's webstore
+                let currency = '';
+                if (phone.web_store === 'Amazon' || phone.web_store === 'Noon' || phone.web_store === 'Btech') {
+                    currency = 'EGP';
+                } else if (phone.web_store === 'Ebay') {
+                    currency = '$';
+                }
+
+                html += `
+                    <li class="phone-card">
+                        <img src="${phone.image_link || 'https://via.placeholder.com/100'}" alt="${phone.model_name}">
+                        <div class="details">
+                            <h2>${phone.model_name}</h2>
+                            <p><strong>Website:</strong> ${phone.web_store || 'N/A'}</p>
+                            <p><strong>Brand:</strong> ${phone.company_name || 'N/A'}</p>
+                            <p class="price">${phone.price_after_promotion || 'N/A'} ${currency}</p>
+                        </div>
+                        <a href="/phone/${phone.id}">View Details</a>
+                    </li>`;
+            });
+            phoneList.innerHTML = html;
+        }
     </script>
 </body>
 </html>
