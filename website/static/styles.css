@@ -4,6 +4,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
+    color: #333;
 }
 
 header {
@@ -12,6 +13,12 @@ header {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+h1 {
+    text-align: center;
+    margin: 20px 0;
+}
+
+/* Search Bar */
 .search-bar {
     display: flex;
     align-items: center;
@@ -42,60 +49,181 @@ header {
     color: #aaa;
 }
 
-/* Page header */
-h1 {
+/* Webstore Filter Styling */
+.webstore-filter {
     text-align: center;
-    margin-top: 20px;
-    color: #333;
+    margin: 20px 0;
 }
 
-/* List styles */
+#webstore-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* Webstore Button Styling */
+.webstore-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    background-color: #f0f0f0;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.webstore-button img.webstore-icon {
+    width: 48px;
+    height: 48px;
+    margin-right: 10px;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.webstore-button:hover {
+    background-color: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+.webstore-button.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #0056b3;
+}
+
+/* Updated button styles */
+.webstore-button.active img {
+    filter: none; /* Remove the white filter on active buttons */
+    opacity: 1; /* Keep icons fully visible */
+}
+
+/* Filter Section Styling */
+.filter-section {
+    text-align: center;
+    margin: 20px 0;
+}
+
+#filter-controls {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+#filter-controls select,
+#filter-controls input {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    max-width: 150px;
+}
+
+#filter-controls button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+#filter-controls button:hover {
+    background-color: #0056b3;
+}
+
+/* Phone Cards */
 ul {
     list-style-type: none;
     padding: 0;
     margin: 20px auto;
     max-width: 1000px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
 }
 
 .phone-card {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 16px;
-    display: flex;
-    gap: 16px;
-    align-items: center;
     background-color: #fff;
-    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.phone-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Image Styling for Cards */
 .phone-card img {
-    width: 100px;
-    height: auto;
-    object-fit: contain;
-    border-radius: 4px;
+    width: 100%;
+    height: 200px; /* Consistent height */
+    object-fit: contain; /* Ensures the entire image fits without cropping */
+    background-color: #f4f4f4; /* Fills the empty space around smaller images */
+    border-bottom: 1px solid #ddd;
 }
 
 .phone-card .details {
-    flex: 1;
+    padding: 15px;
+    text-align: center;
 }
 
-.phone-card .details h2 {
-    margin: 0;
+.phone-card h2 {
     font-size: 18px;
-    color: #333;
+    margin: 10px 0;
 }
 
-.phone-card .details p {
-    margin: 4px 0;
+.phone-card p {
+    margin: 5px 0;
     font-size: 14px;
-    color: #666;
+    color: #555;
+}
+
+.phone-card .price {
+    font-weight: bold;
+    color: #007bff;
 }
 
 .phone-card a {
+    display: block;
+    text-align: center;
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
     text-decoration: none;
-    color: #007BFF;
+    border-radius: 0 0 8px 8px;
+    transition: background-color 0.3s ease;
 }
 
 .phone-card a:hover {
-    text-decoration: underline;
+    background-color: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .search-bar {
+        max-width: 90%;
+    }
+
+    #filter-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #filter-controls select,
+    #filter-controls input {
+        max-width: 90%;
+    }
 }
