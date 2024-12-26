@@ -7,10 +7,15 @@
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-    <h1>Phones Comparison Platform</h1>
+    <header>
+        <!-- Styled Search Bar -->
+        <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="phone-search" placeholder="Search for a phone">
+        </div>
+    </header>
 
-    <!-- Search input for phone names -->
-    <input type="text" id="phone-search" placeholder="Search for phones...">
+    <h1>Phones Comparison Platform</h1>
     <ul id="phone-list"></ul>
 
     <script>
