@@ -81,6 +81,40 @@ def search():
         })
 
     return jsonify(results)
+@app.route('/filter')
+def filter():
+    brand = request.args.get('brand', '').strip()
+    webstore = request.args.get('webstore', '').strip()
+    min_price = request.args.get('min_price', type=float)
+    max_price = request.args.get('max_price', type=float)
+
+    phones = Info.query.join(Brand, Info.id == Brand.brand_id).join(Price, Info.id == Price.price_id)
+
+    if brand:
+        phones = phones.filter(Brand.company_name.ilike(f'%{brand}%'))
+    if webstore:
+        phones = phones.filter(Brand.web_store.ilike(f'%{webstore}%'))
+    if min_price is not None:
+        phones = phones.filter(Price.price_after_promotion >= min_price)
+    if max_price is not None:
+        phones = phones.filter(Price.price_after_promotion <= max_price)
+
+    results = []
+    for phone in phones.all():
+        brand = Brand.query.filter_by(brand_id=phone.id).first()
+        price = Price.query.filter_by(price_id=phone.id).first()
+
+        results.append({
+            "id": phone.id,
+            "model_name": phone.model_name,
+            "image_link": phone.image_link,
+            "company_name": brand.company_name if brand else None,
+            "web_store": brand.web_store if brand else None,
+            "price_after_promotion": price.price_after_promotion if price else None,
+        })
+
+    return jsonify(results)
+
 
 
 
