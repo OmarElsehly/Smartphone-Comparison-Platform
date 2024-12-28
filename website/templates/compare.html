@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Comparison</title>
+    <link rel="stylesheet" href="/static/styles_compare.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {% if for_pdf %}
+    <link rel="stylesheet" href="/static/pdf_styles.css">  <!-- Use custom PDF styles -->
+    {% endif %}
+</head>
+<body>
+    <header class="header">
+        <h1>Phone Comparison</h1>
+    </header>
+
+    <main class="main-content">
+        <section class="compare-container">
+            {% if phone_details|length > 0 %}
+            <div class="compare-grid">
+                {% for phone_detail in phone_details %}
+                    <div class="compare-card">
+                        <img src="{{ phone_detail.phone.image_link or 'https://via.placeholder.com/300' }}" alt="{{ phone_detail.phone.model_name }}">
+                        <div class="card-content">
+                            <h3>{{ phone_detail.phone.model_name }}</h3>
+                            <ul>
+                                <li><strong>Brand:</strong> {{ phone_detail.brand.company_name or 'N/A' }}</li>
+                                <li><strong>Color:</strong> {{ phone_detail.details.colour_name or 'N/A' }}</li>
+                                <li><strong>Screen Size:</strong> {{ phone_detail.details.screen_size or 'N/A' }}</li>
+                                <li><strong>RAM:</strong> {{ phone_detail.details.ram_size or 'N/A' }}</li>
+                                <li><strong>Internal Memory:</strong> {{ phone_detail.details.internal_memory or 'N/A' }}</li>
+                                <li><strong>Rating:</strong> {{ phone_detail.rating.ratings or 'N/A' }}</li>
+                            </ul>
+
+                            <div class="webstore">
+                                <img src="/static/icons/{{ phone_detail.brand.web_store.lower() if phone_detail.brand and phone_detail.brand.web_store else 'default' }}.png" 
+                                     alt="{{ phone_detail.brand.web_store or 'Missing information' }}" 
+                                     class="webstore-image">
+                            </div>
+
+                            <p class="price">
+                                Price: 
+                                <span class="price-amount">
+                                    {{ phone_detail.price.price_after_promotion or 'N/A' }}
+                                </span> 
+                                <span class="currency-symbol">
+                                    {% if phone_detail.brand.web_store and phone_detail.brand.web_store.lower() == 'ebay' %}
+                                        $
+                                    {% else %}
+                                        EGP
+                                    {% endif %}
+                                </span>
+                            </p>
+
+                            {% if not for_pdf %}
+                            <button class="remove-button" data-phone-id="{{ phone_detail.phone.id }}">Remove from Comparison</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            {% else %}
+                <p class="no-phones">No phones selected for comparison. Go back and add phones to compare.</p>
+            {% endif %}
+        </section>
+    </main>
+
+    {% if not for_pdf %}
+    <div class="export-container">
+        <a href="/export_comparison" class="export-button">Export Comparison as PDF</a>
+    </div>
+    {% endif %}
+
+    <footer class="footer">
+        <p>&copy; 2024 Elsehly&Wessam. All Rights Reserved.</p>
+    </footer>
+
+    <!-- JavaScript to handle "Remove from Comparison" -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const removeButtons = document.querySelectorAll('.remove-button');
+    
+            removeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const phoneId = button.getAttribute('data-phone-id');
+                    
+                    if (!phoneId) {
+                        console.error('Phone ID is missing!');
+                        return;
+                    }
+    
+                    console.log('Phone ID:', phoneId); // Log the phone ID
+    
+                    fetch('/update_compare', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ phone_id: phoneId, action: 'remove' })
+                    })
+                    .then(response => {
+                        console.log('Fetch Response:', response);
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Response Data:', data);
+                        if (data.success) {
+                            button.closest('.compare-card').remove();
+                            if (document.querySelectorAll('.compare-card').length === 0) {
+                                document.querySelector('.compare-container').innerHTML = `
+                                    <p class="no-phones">No phones selected for comparison. Go back and add phones to compare.</p>
+                                `;
+                            }
+                        } else {
+                            alert('Error: ' + data.error);
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Fetch Error:', err);
+                    });
+                });
+            });
+        });
+    </script>    
+</body>
+</html>
