@@ -1,0 +1,265 @@
+/* General Styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    background-color: #3a3a3a;
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+footer {
+    background-color: #3a3a3a;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: relative;  /* Changed to relative for normal pages */
+    width: 100%;
+    bottom: 0; /* Ensures it stays at the bottom */
+}
+
+.main-content {
+    padding: 20px;
+    margin-top: 80px; /* Space to account for fixed header */
+    margin-bottom: 50px; /* Space to account for footer */
+}
+
+/* Compare Section */
+.compare-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.compare-card {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 250px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+}
+
+.compare-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.card-content h3 {
+    font-size: 20px;
+    color: #333;
+    margin-top: 10px;
+}
+
+.card-content ul {
+    list-style: none;
+    padding: 0;
+}
+
+.card-content li {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.card-content .price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #007BFF;
+    margin-top: 15px;
+}
+
+.card-content .currency-symbol {
+    font-size: 14px;
+    color: #007BFF;
+}
+
+.webstore img {
+    width: 40px;
+    margin-top: 10px;
+}
+
+.remove-button {
+    margin-top: 10px;
+    background-color: #ff4d4d;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.remove-button:hover {
+    background-color: #e60000;
+}
+
+/* First Page Fancy Styling */
+.header {
+    background-color: #007BFF;
+    padding: 30px;
+    color: white;
+    text-align: center;
+    border-radius: 0 0 15px 15px;
+}
+
+.header h1 {
+    font-size: 36px;
+    margin: 0;
+}
+
+.footer {
+    background-color: #007BFF;
+    padding: 30px;
+    color: white;
+    text-align: center;
+    border-radius: 0 0 15px 15px;
+}
+
+.footer h1 {
+    font-size: 36px;
+    margin: 0;
+}
+
+.compare-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* PDF Specific Styles */
+@media print {
+    .remove-button,
+    .export-button {
+        display: none;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-size: 14px;
+        background-color: white;
+    }
+
+    header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background-color: #333;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        z-index: 1000;
+    }
+
+    .main-content {
+        margin-top: 60px; /* Adjust content to account for fixed header */
+    }
+
+    .compare-container {
+        display: block;
+        padding: 0;
+    }
+
+    .compare-card {
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        width: 100%; /* Make the card take full width of the page */
+        max-width: 600px; /* Ensure it fits well */
+        padding: 20px;
+        text-align: center;
+        margin: 20px auto;
+        box-shadow: none; /* Remove shadows for printing */
+        page-break-after: always; /* Force one card per page */
+    }
+
+    .compare-card img {
+        height: auto;
+        max-height: 300px; /* Adjust for better readability */
+        object-fit: contain;
+        margin-bottom: 10px;
+    }
+
+    .card-content h3 {
+        font-size: 22px; /* Larger font for print */
+        color: #333;
+        margin-top: 10px;
+    }
+
+    .card-content ul li {
+        font-size: 16px; /* Slightly larger font */
+    }
+
+    .card-content .price {
+        font-size: 20px;
+        color: #007BFF;
+    }
+
+    footer {
+        position: absolute; /* Ensures footer is placed correctly at the bottom of the page */
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #333;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        z-index: 1000;
+    }
+
+    .compare-card {
+        padding-top: 80px; /* Add space to prevent overlap with the fixed header */
+    }
+}
+
+footer {
+    background-color: #3a3a3a;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.export-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.export-button {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.export-button:hover {
+    background-color: #218838;
+}
+
+.no-phones {
+    font-size: 18px;
+    color: #888;
+    text-align: center;
+}
