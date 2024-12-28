@@ -1,6 +1,6 @@
-
 import os
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session, make_response
+from weasyprint import HTML, CSS
 from flask_sqlalchemy import SQLAlchemy
 
 basedir = os.path.abspath(os.path.abspath(os.path.dirname(__file__)))
@@ -40,6 +40,8 @@ class Rating(db.Model):
     ratings_id = db.Column(db.Integer, primary_key=True)
     ratings = db.Column(db.Text, nullable=True)
 
+compare_list = []  # List to store selected phone IDs for comparison
+
 @app.route('/')
 def index():
     phones = Info.query.all()
@@ -60,7 +62,116 @@ def phone_detail(phone_id):
         brand=brand,
         rating=rating,
     )
-    
+
+@app.route('/export_comparison', methods=['GET'])
+def export_comparison():
+    # Check if compare list exists in the session
+    if 'compare_list' not in session or len(session['compare_list']) == 0:
+        return "No phones selected for comparison.", 400
+
+    # Retrieve the phone details for the comparison
+    phone_ids = session['compare_list']
+    phones = Info.query.filter(Info.id.in_(phone_ids)).all()
+    phone_details = []
+    for phone in phones:
+        details = Details.query.filter_by(details_id=phone.id).first()
+        price = Price.query.filter_by(price_id=phone.id).first()
+        brand = Brand.query.filter_by(brand_id=phone.id).first()
+        rating = Rating.query.filter_by(ratings_id=phone.id).first()
+        phone_details.append({
+            'phone': phone,
+            'details': details,
+            'price': price,
+            'brand': brand,
+            'rating': rating
+        })
+
+    # Render the compare template into HTML
+    html_content = render_template('compare.html', phone_details=phone_details, for_pdf=True)
+
+    # Dynamically resolve the path for the CSS file
+    css_path = os.path.join(basedir, 'static', 'pdf_styles.css')
+    print(f"Using CSS file: {css_path}")  # Debug statement
+
+    # Load the dedicated PDF CSS
+    try:
+        pdf_css = CSS(filename=css_path)
+    except FileNotFoundError:
+        return "CSS file not found. Please ensure the static/pdf_styles.css file exists.", 500
+
+    # Generate the PDF using WeasyPrint with the custom CSS
+    pdf = HTML(string=html_content).write_pdf(stylesheets=[pdf_css])
+
+    # Serve the PDF as a downloadable file
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'attachment; filename=comparison.pdf'
+    return response
+
+
+@app.route('/compare')
+def compare():
+    # Retrieve the phone IDs from the session compare list
+    if 'compare_list' not in session or len(session['compare_list']) == 0:
+        return render_template('compare.html', phone_details=[])
+
+    phones = Info.query.filter(Info.id.in_(session['compare_list'])).all()
+    phone_details = []
+    for phone in phones:
+        details = Details.query.filter_by(details_id=phone.id).first()
+        price = Price.query.filter_by(price_id=phone.id).first()
+        brand = Brand.query.filter_by(brand_id=phone.id).first()
+        rating = Rating.query.filter_by(ratings_id=phone.id).first()
+        phone_details.append({
+            'phone': phone,
+            'details': details,
+            'price': price,
+            'brand': brand,
+            'rating': rating
+        })
+
+    return render_template('compare.html', phone_details=phone_details)
+
+@app.route('/update_compare', methods=['POST'])
+def update_compare():
+    data = request.json
+    phone_id = data.get('phone_id')
+    action = data.get('action')
+
+    if not phone_id:
+        return jsonify({'error': 'Phone ID is required'}), 400
+
+    # Initialize compare_list in session if not already
+    if 'compare_list' not in session:
+        session['compare_list'] = []
+
+    # Add or remove the phone_id based on the action
+    compare_list = session['compare_list']
+
+    if action == 'add':
+        if len(compare_list) < 4 and phone_id not in compare_list:
+            compare_list.append(phone_id)
+        else:
+            return jsonify({'error': 'Comparison list is full or phone already added'}), 400
+    elif action == 'remove':
+        if phone_id in compare_list:
+            compare_list.remove(phone_id)
+        else:
+            return jsonify({'error': 'Phone not in comparison list'}), 400
+    else:
+        return jsonify({'error': 'Invalid action'}), 400
+
+    # Update the session compare list
+    session['compare_list'] = compare_list
+    session.modified = True
+
+    return jsonify({'success': True, 'compare_list': compare_list})
+
+@app.teardown_request
+def clear_compare_list(exception=None):
+    """Clear compare list after session ends."""
+    session.pop('compare_list', None)
+
 @app.route('/search')
 def search():
     query = request.args.get('query')
@@ -81,6 +192,7 @@ def search():
         })
 
     return jsonify(results)
+
 @app.route('/filter')
 def filter():
     brand = request.args.get('brand', '').strip()
@@ -115,9 +227,5 @@ def filter():
 
     return jsonify(results)
 
-
-
-
 if __name__ == '__main__':
-    app.run(debug=True)
-    print(basedir) 
+    app.run(host='0.0.0.0', port=5000, debug=True)
