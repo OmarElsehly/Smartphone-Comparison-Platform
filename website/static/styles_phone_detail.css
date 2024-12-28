@@ -126,3 +126,30 @@ footer a {
 footer a:hover {
     text-decoration: underline;
 }
+.compare-section {
+    text-align: left;
+    margin-top: 20px;
+}
+
+.compare-button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.compare-button:hover {
+    transform: translateY(-2px);
+    background-color: #0056b3;
+}
+
+.compare-button.active {
+    background-color: #28a745;
+    color: white;
+}
