@@ -1,0 +1,239 @@
+/* styles_compare.css */
+
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f1f8ff;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Header */
+.header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    border-bottom: 5px solid #388E3C;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* Main Content */
+.main-content {
+    padding: 20px;
+}
+
+/* Comparison Section */
+.compare-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 1s ease-out;
+}
+
+/* Animation for Fading In */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.compare-container h1 {
+    text-align: center;
+    color: #4CAF50;
+    font-size: 2rem;
+    margin-bottom: 30px;
+}
+
+/* Comparison Grid */
+.compare-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    justify-items: center;
+}
+
+.compare-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-width: 320px;
+    width: 100%;
+    transition: transform 0.3s ease-in-out;
+}
+
+.compare-card:hover {
+    transform: scale(1.05);
+}
+
+.compare-card img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-bottom: 2px solid #ddd;
+}
+
+/* Card Content */
+.card-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+}
+
+/* Phone Name */
+.compare-card h3 {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 15px;
+}
+
+/* Phone Details */
+.compare-card ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.compare-card li {
+    font-size: 1rem;
+    margin-bottom: 12px;
+    color: #555;
+}
+
+.compare-card li strong {
+    color: #333;
+}
+
+/* Webstore Icon - Small Circle */
+.webstore {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px; /* Add spacing below the icon */
+}
+
+.webstore-image {
+    width: 80px !important;  /* Set to 20px */
+    height: 80px !important; /* Ensure it's a circle */
+    border-radius: 50%;      /* Circle shape */
+    object-fit: cover;       /* Makes sure the image is correctly resized */
+    margin-bottom: 10px;       /* Space between the icon and the name */
+}
+
+.webstore-name {
+    font-size: 12px;          /* Adjust font size to match the smaller icon */
+    color: #007bff;
+}
+
+/* Price */
+.compare-card .price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #28a745;
+    margin-top: 10px;
+}
+
+/* Remove Button */
+.remove-button {
+    background-color: #ff6b6b;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+}
+
+.remove-button:hover {
+    background-color: #ff4747;
+}
+
+/* No Phones Selected Message */
+.no-phones {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #777;
+    margin-top: 50px;
+}
+
+/* Footer */
+.footer {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    margin-top: 50px;
+    font-size: 1rem;
+    border-top: 5px solid #388E3C;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .compare-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .compare-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .compare-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .compare-card {
+        margin-bottom: 20px;
+    }
+}
+.export-container {
+    display: flex;
+    justify-content: center;  /* Center the button horizontally */
+    margin-bottom: 20px;  /* Add some space before the footer */
+}
+
+.export-button {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-top: 15px;
+}
+
+.export-button:hover {
+    background-color: #0056b3;
+    text-align: center;
+}
