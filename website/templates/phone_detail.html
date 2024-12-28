@@ -78,11 +78,51 @@
                 </li>
                 <li><i class="fas fa-percent"></i> <strong>Promotion:</strong> {{ price.promotion or "Missing information" }}</li>
             </ul>
+            <section class="compare-section">
+                <button id="add-to-compare" class="compare-button" data-phone-id="{{ phone.id }}">Add to Compare</button>
+            </section>
         </section>
     </main>
-
     <footer class="footer">
         <p>&copy; 2024 Elsehly&Wessam. All Rights Reserved.</p>
     </footer>
-</body>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const compareButtons = document.querySelectorAll('#add-to-compare');
+        
+            compareButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const phoneId = button.getAttribute('data-phone-id'); // Get phone ID from data attribute
+                    const action = button.classList.contains("active") ? 'remove' : 'add';
+        
+                    // Sending the update to the server
+                    fetch('/update_compare', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            phone_id: phoneId,  // Sending the phone ID to the server
+                            action: action,
+                        }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Toggle the button text based on the action
+                            button.classList.toggle("active");
+                            if (button.classList.contains("active")) {
+                                button.textContent = "Selected for Comparison";
+                            } else {
+                                button.textContent = "Add to Compare";
+                            }
+                        } else {
+                            alert(data.error);  // Show an error message if needed
+                        }
+                    });
+                });
+            });
+        });
+        </script>
+ </body>
 </html>
