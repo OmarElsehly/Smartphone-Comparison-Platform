@@ -1,3 +1,33 @@
+/* Navigation bar container */
+.navigation-bar {
+    display: flex;
+    align-items: center;
+}
+
+/* Left navigation links (Home) */
+.nav-links-left {
+    display: flex;
+    margin: 0;
+}
+
+.nav-links-left li {
+    margin-right: 50px;
+}
+
+
+/* Navigation links */
+.nav-links-left a{
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.nav-links-left a:hover {
+    color: #007bff;
+}
+
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f9f9f9;
@@ -150,6 +180,29 @@ footer a:hover {
 }
 
 .compare-button.active {
+    background-color: #28a745;
+    color: white;
+}
+
+.add-to-cart-button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.add-to-cart-button:hover {
+    transform: translateY(-2px);
+    background-color: #0056b3;
+}
+
+.add-to-cart-button.active {
     background-color: #28a745;
     color: white;
 }

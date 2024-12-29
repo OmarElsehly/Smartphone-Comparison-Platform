@@ -10,6 +10,12 @@
 <body>
     <header class="header">
         <h1>{{ phone.model_name or "Missing information" }}</h1>
+        <nav class="navigation-bar">
+            <ul class="nav-links-left">
+                <li><a href="{{ url_for('index') }}">Back To Home..</a></li> <!-- Go back home link -->
+            </ul>
+
+        </nav>
     </header>
 
     <main class="container">
@@ -80,7 +86,12 @@
             </ul>
             <section class="compare-section">
                 <button id="add-to-compare" class="compare-button" data-phone-id="{{ phone.id }}">Add to Compare</button>
+                <button id="add-to-cart" class="add-to-cart-button" data-phone-id="{{ phone.id }}">
+                    Add to Cart
+                </button>
+                
             </section>
+            
         </section>
     </main>
     <footer class="footer">
@@ -88,19 +99,18 @@
     </footer>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            // Compare Button Logic
             const compareButtons = document.querySelectorAll('#add-to-compare');
-        
+    
             compareButtons.forEach(button => {
                 button.addEventListener('click', function () {
                     const phoneId = button.getAttribute('data-phone-id'); // Get phone ID from data attribute
                     const action = button.classList.contains("active") ? 'remove' : 'add';
-        
+    
                     // Sending the update to the server
                     fetch('/update_compare', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             phone_id: phoneId,  // Sending the phone ID to the server
                             action: action,
@@ -111,18 +121,37 @@
                         if (data.success) {
                             // Toggle the button text based on the action
                             button.classList.toggle("active");
-                            if (button.classList.contains("active")) {
-                                button.textContent = "Selected for Comparison";
-                            } else {
-                                button.textContent = "Add to Compare";
-                            }
+                            button.textContent = button.classList.contains("active") ? 
+                                "Selected for Comparison" : "Add to Compare";
                         } else {
                             alert(data.error);  // Show an error message if needed
                         }
                     });
                 });
             });
+    
+            // Add to Cart Button Logic
+            document.querySelector('#add-to-cart').addEventListener('click', function () {
+                const phoneId = this.getAttribute('data-phone-id');
+                const action = this.classList.contains("active") ? 'remove' : 'add';
+        
+                fetch('/update_cart', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone_id: phoneId, action: action }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        this.classList.toggle("active");
+                        this.textContent = this.classList.contains("active") ?
+                            "Added to Cart" : "Add to Cart";
+                    } else {
+                        alert(data.error);
+                    }
+                });
+            });
         });
-        </script>
+    </script>    
  </body>
 </html>

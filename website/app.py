@@ -40,7 +40,130 @@ class Rating(db.Model):
     ratings_id = db.Column(db.Integer, primary_key=True)
     ratings = db.Column(db.Text, nullable=True)
 
+
+
 compare_list = []  # List to store selected phone IDs for comparison
+cart = []  # Global cart list to store phone IDs
+
+@app.route('/cart', methods=['GET'])
+def view_cart():
+    # Combine functionality for viewing the cart
+    if 'cart' not in session or not session['cart']:
+        return render_template('cart.html', phones=[], total_price=0)
+
+    phone_ids = [int(phone_id) for phone_id in session['cart']]
+    phones = Info.query.filter(Info.id.in_(phone_ids)).all()
+
+    phone_details = []
+    total_price = 0
+
+    for phone in phones:
+        price = Price.query.filter_by(price_id=phone.id).first()
+        brand = Brand.query.filter_by(brand_id=phone.id).first()
+
+        if price and price.price_after_promotion:
+            phone_price = float(price.price_after_promotion)
+            if brand and brand.web_store.lower() == "ebay":
+                phone_price *= 50  # Convert USD to EGP for eBay
+                currency = "EGP"
+            else:
+                currency = "EGP"
+        else:
+            phone_price = 0
+            currency = "EGP"
+
+        total_price += phone_price
+
+        phone_details.append({
+            'id': phone.id,
+            'model_name': phone.model_name,
+            'image_link': phone.image_link,
+            'price_after_promotion': phone_price,
+            'currency': currency,
+        })
+
+    return render_template('cart.html', phones=phone_details, total_price=total_price)
+
+
+@app.route('/compare', methods=['GET'])
+def compare_phones():
+    if 'compare_list' not in session or len(session['compare_list']) == 0:
+        return render_template('compare.html', phone_details=[])
+
+    phone_ids = session['compare_list']
+    phones = Info.query.filter(Info.id.in_(phone_ids)).all()
+
+    phone_details = []
+    for phone in phones:
+        details = Details.query.filter_by(details_id=phone.id).first()
+        price = Price.query.filter_by(price_id=phone.id).first()
+        brand = Brand.query.filter_by(brand_id=phone.id).first()
+        rating = Rating.query.filter_by(ratings_id=phone.id).first()
+
+        phone_details.append({
+            'phone': phone,
+            'details': details,
+            'price': price,
+            'brand': brand,
+            'rating': rating
+        })
+
+    return render_template('compare.html', phone_details=phone_details)
+
+
+
+@app.route('/update_cart', methods=['POST'])
+def update_cart():
+    data = request.json
+    phone_id = data.get('phone_id')
+    action = data.get('action')
+
+    if not phone_id:
+        return jsonify({'error': 'Phone ID is required'}), 400
+
+    # Initialize cart in session if not already
+    if 'cart' not in session:
+        session['cart'] = []
+
+    cart = session['cart']
+
+    if action == 'add':
+        if phone_id not in cart:
+            cart.append(phone_id)
+    elif action == 'remove':
+        if phone_id in cart:
+            cart.remove(phone_id)
+    else:
+        return jsonify({'error': 'Invalid action'}), 400
+
+    # Update the session cart
+    session['cart'] = cart
+    session.modified = True  # Ensure changes are saved
+
+    return jsonify({'success': True, 'cart': cart})
+
+
+@app.route('/remove_from_cart', methods=['POST'])
+def remove_from_cart():
+    data = request.json
+    phone_id = data.get('phone_id')
+
+    if not phone_id:
+        return jsonify({'error': 'Phone ID is required'}), 400
+
+    # Ensure cart exists in session
+    if 'cart' not in session:
+        session['cart'] = []
+
+    cart = session['cart']
+
+    if phone_id in cart:
+        cart.remove(phone_id)
+        session['cart'] = cart
+        session.modified = True
+        return jsonify({'success': True})
+    else:
+        return jsonify({'error': 'Phone not found in cart'}), 400
 
 @app.route('/')
 def index():
@@ -228,4 +351,4 @@ def filter():
     return jsonify(results)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(debug=True)
