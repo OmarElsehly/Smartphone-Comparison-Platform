@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <link rel="stylesheet" href="/static/styles_cart.css">
+</head>
+<body>
+    <header class="header">
+        <h1>Your Shopping Cart</h1>
+        <nav class="navigation-bar">
+            <ul class="nav-links-left">
+                <li><a href="{{ url_for('index') }}">Back To Home..</a></li> <!-- Go back home link -->
+            </ul>
+
+        </nav>
+    </header>
+
+    <main class="container">
+        {% if phones %}
+            <section class="cart-items">
+                {% for phone in phones %}
+                <div class="cart-item">
+                    <img src="{{ phone.image_link or 'https://via.placeholder.com/150' }}" alt="{{ phone.model_name }}" class="cart-image">
+                    <div class="cart-details">
+                        <h2>{{ phone.model_name }}</h2>
+                        <p><strong>Price:</strong> {{ phone.price_after_promotion or 'N/A' }} {{ phone.currency or '' }}</p>
+                        <button class="remove-button" data-phone-id="{{ phone.id }}">Remove</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </section>
+            <section class="cart-summary">
+                <h2 id="total-price-display">Total Price: {{ total_price }} EGP</h2>
+                <button id="toggle-currency-button">Convert to USD</button>
+            </section>
+        {% else %}
+            <p>Your cart is empty.</p>
+        {% endif %}
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Elsehly&Wessam. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Handle item removal
+            document.querySelectorAll('.remove-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const phoneId = button.getAttribute('data-phone-id');
+        
+                    fetch('/remove_from_cart', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ phone_id: phoneId }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            button.closest('.cart-item').remove();
+                            location.reload(); // Reload to update total price
+                        } else {
+                            alert(data.error);
+                        }
+                    });
+                });
+            });
+        
+            // Handle currency toggle
+            let isUSD = false;
+            const conversionRate = 0.02; // USD equivalent of 1 EGP (example: 1 EGP = 0.02 USD)
+            const totalPriceDisplay = document.getElementById('total-price-display');
+            const toggleButton = document.getElementById('toggle-currency-button');
+        
+            // Original price in EGP (initialize it correctly)
+            let totalPriceEGP = parseFloat({{ total_price }});
+        
+            // Format the price for readability
+            const formatPrice = (price, currency) => {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: currency
+                }).format(price);
+            };
+        
+            // Set initial display in EGP
+            totalPriceDisplay.textContent = `Total Price: ${formatPrice(totalPriceEGP, 'EGP')}`;
+            toggleButton.textContent = "Convert to USD";
+        
+            toggleButton.addEventListener('click', () => {
+                if (isUSD) {
+                    // Convert back to EGP
+                    totalPriceDisplay.textContent = `Total Price: ${formatPrice(totalPriceEGP, 'EGP')}`;
+                    toggleButton.textContent = "Convert to USD";
+                } else {
+                    // Convert to USD
+                    const convertedPriceUSD = (totalPriceEGP * conversionRate).toFixed(2);
+                    totalPriceDisplay.textContent = `Total Price: ${formatPrice(convertedPriceUSD, 'USD')}`;
+                    toggleButton.textContent = "Convert to EGP";
+                }
+                isUSD = !isUSD; // Toggle the currency state
+            });
+        });
+        
+    </script>
+</body>
+</html>
