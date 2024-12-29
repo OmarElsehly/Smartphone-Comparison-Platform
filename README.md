@@ -54,7 +54,7 @@ website like -> https://omarelsehly.pythonanywhere.com/
 7. **PDF Export for Comparison**:
    - Generate a downloadable PDF comparison report of selected phones for offline viewing.
 8. **Dynamic Cart Management**:
-   - Update cart contents in real time using AJAX for a smoother user experience.
+   - Update cart contents in real time.
 
 ---
 
