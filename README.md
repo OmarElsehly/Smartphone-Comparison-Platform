@@ -12,8 +12,8 @@ website like -> https://omarelsehly.pythonanywhere.com/
  The platform includes 14 main features across different areas, with hosting, categorized as follows:
 
 ### Data Preparation: 6 features
-### Website Functionalities: 8 features
-### Total 14 features.
+### Website Functionalities: 9 features
+### Total 15 features.
 
 ## Data Preparation
 1. **Web Scraping**: Extracting phone data from multiple web stores to collect raw data efficiently.
@@ -52,10 +52,93 @@ website like -> https://omarelsehly.pythonanywhere.com/
    - View the total price with a breakdown of items.
    - Perform currency conversion specifically for eBay listings (e.g., USD → EGP).
 7. **PDF Export for Comparison**:
-   - Generate a downloadable PDF comparison report of selected phones for offline viewing.
-8. **Dynamic Cart Management**:
-   - Update cart contents in real time.
-
+8. **Error Handling**
+   - Generate a downloadable PDF comparison report of selected phones for offline viewing using the WeasyPrint library.
+   - Also, return ``` No phone selected for comparison ``` when there is no phone to export as pdf.
+     ```
+     @app.route('/export_comparison', methods=['GET'])
+     def export_comparison():
+         # Check if compare list exists in the session
+         if 'compare_list' not in session or len(session['compare_list']) == 0:
+             return "No phones selected for comparison.", 400
+         # Retrieve the phone details for the comparison
+         phone_ids = session['compare_list']
+         phones = Info.query.filter(Info.id.in_(phone_ids)).all()
+         phone_details = []
+         for phone in phones:
+             details = Details.query.filter_by(details_id=phone.id).first()
+             price = Price.query.filter_by(price_id=phone.id).first()
+             brand = Brand.query.filter_by(brand_id=phone.id).first()
+             rating = Rating.query.filter_by(ratings_id=phone.id).first()
+             phone_details.append({
+                 'phone': phone,
+                 'details': details,
+                 'price': price,
+                 'brand': brand,
+                 'rating': rating
+             })
+         html_content = render_template('compare.html', phone_details=phone_details, for_pdf=True)
+         css_path = os.path.join(basedir, 'static', 'pdf_styles.css')
+         try:
+             pdf_css = CSS(filename=css_path)
+         except FileNotFoundError:
+             return "CSS file not found. Please ensure the static/pdf_styles.css file exists.", 500
+         # Generate the PDF using WeasyPrint with the custom CSS
+         pdf = HTML(string=html_content).write_pdf(stylesheets=[pdf_css])
+         response = make_response(pdf)
+         response.headers['Content-Type'] = 'application/pdf'
+         response.headers['Content-Disposition'] = 'attachment; filename=comparison.pdf'
+         return response
+     ```
+9. **Dynamic Cart Management**:
+   - Update cart contents in real time using AJAX 
+       #### Remove an item from the cart using a POST AJAX request in ``` cart.html ``` to /remove_from_cart.
+       ```
+       document.querySelectorAll('.remove-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const phoneId = button.getAttribute('data-phone-id');
+        
+                    fetch('/remove_from_cart', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ phone_id: phoneId }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            button.closest('.cart-item').remove();
+                            location.reload(); // Reload to update total price
+                        } else {
+                            alert(data.error);
+                        }
+                    });
+                });
+            });
+       ```
+     #### The AJAX request targets the /remove_from_cart route in ```app.py```.
+     ```
+     @app.route('/remove_from_cart', methods=['POST'])
+     def remove_from_cart():
+         data = request.json
+         phone_id = data.get('phone_id')
+   
+       if not phone_id:
+           return jsonify({'error': 'Phone ID is required'}), 400
+   
+       # Ensure cart exists in session
+       if 'cart' not in session:
+           session['cart'] = []
+   
+       cart = session['cart']
+   
+       if phone_id in cart:
+           cart.remove(phone_id)
+           session['cart'] = cart
+           session.modified = True
+           return jsonify({'success': True})
+       else:
+           return jsonify({'error': 'Phone not found in cart'}), 400
+     ```
 ---
 
 ## Technical Details
