@@ -1,10 +1,8 @@
-/* Navigation bar container */
 .navigation-bar {
     display: flex;
     align-items: center;
 }
 
-/* Left navigation links (Home) */
 .nav-links-left {
     display: flex;
     margin: 0;
@@ -15,7 +13,6 @@
 }
 
 
-/* Navigation links */
 .nav-links-left a{
     text-decoration: none;
     color: #333;
@@ -27,182 +24,235 @@
     color: #007bff;
 }
 
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f9f9f9;
+/* General Reset */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f1f8ff;
     color: #333;
     line-height: 1.6;
 }
 
 .header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 20px 0;
     text-align: center;
-    background-color: #0056b3;
-    color: rgb(255, 255, 255);
-    padding: 0.1em 0;
-    font-size: 1rem;
+    border-bottom: 5px solid #388E3C;
+}
+
+.header h1 {
+    font-size: 2.5rem;
     font-weight: bold;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    letter-spacing: 1px;
 }
 
-.container {
-    max-width: 900px;
-    margin: 30px auto;
+.main-content {
+    padding: 20px;
+}
+
+.compare-container {
+    max-width: 1300px;
+    margin: 0 auto;
     background-color: white;
-    border-radius: 10px;
-    padding: 25px;
-    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 1s ease-out;
 }
 
-.image-container {
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.compare-container h1 {
     text-align: center;
+    color: #4CAF50;
+    font-size: 2rem;
     margin-bottom: 30px;
 }
 
-.phone-image {
-    max-width: 100%; /* Ensures the image is responsive */
-    width: 250px; /* Set a fixed width */
-    height: 350px; /* Set a fixed height */
-    object-fit: contain; /* Ensures the image fits the container without cropping */
-    border-radius: 10px;
-    border: 3px solid #eaeaea;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    background-color: #f0f0f0; /* Light background to ensure a good contrast for the image */
+/* Comparison Grid */
+.compare-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    justify-items: center;
 }
 
-.webstore {
-    margin-top: 15px;
-    text-align: center;
-}
-
-.webstore-image {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    margin-bottom: 10px;
-    border: 2px solid #007bff;
+.compare-card {
     background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-width: 320px;
+    width: 100%;
+    transition: transform 0.3s ease-in-out;
 }
 
-.webstore-name {
-    margin-top: 5px;
+.compare-card:hover {
+    transform: scale(1.05);
+}
+
+.compare-card img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-bottom: 2px solid #ddd;
+}
+
+/* Card Content */
+.card-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+}
+
+/* Phone Name */
+.compare-card h3 {
+    font-size: 1.3rem;
     font-weight: bold;
-    font-size: 1.1em;
+    color: #007bff;
+    margin-bottom: 15px;
+}
+
+/* Phone Details */
+.compare-card ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.compare-card li {
+    font-size: 1rem;
+    margin-bottom: 12px;
     color: #555;
 }
 
-h2 {
-    font-size: 1.8rem;
-    color: #0056b3;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #007bff;
-    display: inline-block;
-    padding-bottom: 5px;
-}
-
-.details-list, .price-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.details-list li, .price-list li {
-    display: flex;
-    align-items: center;
-    margin-bottom: 12px;
-    font-size: 1.1rem;
+.compare-card li strong {
     color: #333;
-    padding: 10px;
-    border: 1px solid #eaeaea;
-    border-radius: 8px;
-    background-color: #fafafa;
-    transition: all 0.3s ease-in-out;
 }
 
-.details-list li:hover, .price-list li:hover {
-    background-color: #f0f8ff;
-    border-color: #007bff;
+.webstore {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px; 
 }
 
-.details-list li i, .price-list li i {
-    font-size: 1.5em;
+.webstore-image {
+    width: 80px !important;  
+    height: 80px !important; 
+    border-radius: 50%;    
+    object-fit: cover;       
+    margin-bottom: 10px;      
+}
+
+.webstore-name {
+    font-size: 12px;         
     color: #007bff;
-    margin-right: 15px;
 }
 
-.details-list li strong, .price-list li strong {
-    color: #0056b3;
+/* Price */
+.compare-card .price {
+    font-size: 1.2rem;
     font-weight: bold;
-    margin-right: 10px;
+    color: #28a745;
+    margin-top: 10px;
 }
 
-.footer {
+/* Remove Button */
+.remove-button {
+    background-color: #ff6b6b;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
     text-align: center;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+}
+
+.remove-button:hover {
+    background-color: #ff4747;
+}
+
+/* No Phones Selected Message */
+.no-phones {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #777;
+    margin-top: 50px;
+}
+
+/* Footer */
+.footer {
+    background-color: #4CAF50;
+    color: white;
     padding: 15px;
-    background-color: #0056b3;
-    color: white;
-    margin-top: 30px;
-    font-size: 1em;
-    border-top: 3px solid #007bff;
+    text-align: center;
+    margin-top: 50px;
+    font-size: 1rem;
+    border-top: 5px solid #388E3C;
 }
 
-footer a {
-    color: #ffd700;
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .compare-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .compare-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .compare-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .compare-card {
+        margin-bottom: 20px;
+    }
+}
+.export-container {
+    display: flex;
+    justify-content: center; 
+    margin-bottom: 20px;  
+}
+
+.export-button {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
     text-decoration: none;
+    font-size: 0.9rem;
+    margin-top: 15px;
 }
 
-footer a:hover {
-    text-decoration: underline;
-}
-.compare-section {
-    text-align: left;
-    margin-top: 20px;
-}
-
-.compare-button {
-    display: inline-block;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    color: white;
-    background-color: #007bff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.compare-button:hover {
-    transform: translateY(-2px);
+.export-button:hover {
     background-color: #0056b3;
-}
-
-.compare-button.active {
-    background-color: #28a745;
-    color: white;
-}
-
-.add-to-cart-button {
-    display: inline-block;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    color: white;
-    background-color: #007bff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.add-to-cart-button:hover {
-    transform: translateY(-2px);
-    background-color: #0056b3;
-}
-
-.add-to-cart-button.active {
-    background-color: #28a745;
-    color: white;
+    text-align: center;
 }

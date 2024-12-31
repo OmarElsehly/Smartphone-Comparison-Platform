@@ -209,14 +209,10 @@ def export_comparison():
             'rating': rating
         })
 
-    # Render the compare template into HTML
     html_content = render_template('compare.html', phone_details=phone_details, for_pdf=True)
 
-    # Dynamically resolve the path for the CSS file
     css_path = os.path.join(basedir, 'static', 'pdf_styles.css')
-    print(f"Using CSS file: {css_path}")  # Debug statement
 
-    # Load the dedicated PDF CSS
     try:
         pdf_css = CSS(filename=css_path)
     except FileNotFoundError:
@@ -225,7 +221,6 @@ def export_comparison():
     # Generate the PDF using WeasyPrint with the custom CSS
     pdf = HTML(string=html_content).write_pdf(stylesheets=[pdf_css])
 
-    # Serve the PDF as a downloadable file
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
     response.headers['Content-Disposition'] = 'attachment; filename=comparison.pdf'
